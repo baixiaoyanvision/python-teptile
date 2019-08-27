@@ -1,3 +1,7 @@
+#实现这样一个程序：输入城市名，输出这个城市当日的天气情况（气温、风力等）
+#首先需要安装 anaconda，熟悉 jupyter notebook 的用法；
+#然后在 anaconda 中，安装 requests 库；
+#在  jupyter notebook 中，利用 requests 库访问接口，实现功能
 import requests
 
 while True:
