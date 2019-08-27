@@ -1,0 +1,77 @@
+#任务  利用豆瓣 api 接口，批量抓取豆瓣电影数据并保存至本地 csv 文件中
+
+#--*--coding:utf-8 --*--
+#encoding:utf-8
+
+import requests
+from PIL import Image
+from io import BytesIO
+import csv
+import pandas
+
+#获取 “肖申克的救赎” 电影所有数据，并将电影海报写入本地的.jpg文件中
+req = requests.get("https://api.douban.com/v2/movie/1292052?apikey=0df993c66c0c636e29ecbb5344252a4a")
+web_data = req.json()
+url = web_data['image']
+#print(url)
+#print (web_data)
+mobile_data = requests.get(url)
+i = Image.open(BytesIO(mobile_data.content))
+i.save(r'image.jpg','jpeg')
+
+#批量获取Top250部电影的数据，一部电影的数据生成一个列表，作为 csv 的一行保存到本地 .csv 文件
+num = 0
+for i in range(0,13):
+    req = requests.get("https://api.douban.com/v2/movie/top250?start=%d&apikey=0df993c66c0c636e29ecbb5344252a4a" %i)
+    movie_data = req.json()
+    one_movie = movie_data.get('subjects')
+    count = len(one_movie)
+    #print(count) 
+    for j in range(0,count):
+        temp_list = []
+        info = one_movie[j]
+        average = info.get('rating').get('average')
+        genres = info.get('genres')
+        title = info.get('title')
+        casts = []
+        casts_list = info.get('casts')
+        for m in range(0,len(casts_list)):
+            #tmp1 = casts_list[m].get('name_en')
+            tmp2 = casts_list[m].get('name')
+            #casts.append(tmp1)
+            casts.append(tmp2)
+        cast = ','.join(casts)
+        original_title = info.get('original_title')
+        subtype = info.get('subtype')
+        directors = []
+        direct = info.get('directors')
+        for n in range(0,len(direct)):
+            #tmp1 = direct[n].get('name_en')
+            tmp2 = direct[n].get('name')
+            #directors.append(tmp1)
+            directors.append(tmp2)
+        director = ','.join(directors)
+        year = info.get('year')
+        movie_id = info.get('id')
+        temp_list.append(average)
+        temp_list.append(genres)
+        temp_list.append(title)
+        temp_list.append(casts)
+        temp_list.append(original_title)
+        temp_list.append(subtype)
+        temp_list.append(director)
+        temp_list.append(year)
+        temp_list.append(movie_id)
+        if num < 250:
+            num += 1
+            print(num)
+            with open('movie250.csv',"a+",encoding='utf-8') as csvfile:
+                writer = csv.writer(csvfile)
+                writer.writerow(temp_list)
+            #获取每一部电影海报的url,下载电影海报到本地
+            image_url = info.get('images').get('small')
+            mobile_data = requests.get(image_url)
+            img = Image.open(BytesIO(mobile_data.content))
+            img.save(r'D://Python37//Learn//img//%s.jpg' %title,'jpeg')
+        
+print("保存成功！")
