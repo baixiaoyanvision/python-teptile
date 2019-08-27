@@ -1,0 +1,22 @@
+import requests
+
+while True:
+    print('请输入你要查询的城市名称：')
+    city = input()
+    if not city:
+        break
+    try:
+        req = requests.get('http://wthrcdn.etouch.cn/weather_mini?city=%s' %city)
+    except:
+        print("查询失败")
+        break
+    dic_city = req.json()   #转换为字典
+    city_data = dic_city.get('data')    #没有data的话返回None
+    if city_data:
+        city_forecast = city_data['forecast'][0]  #下面的都可以换成  '.get'  方法
+        print(city_forecast.get('date'))
+        print(city_forecast.get('high'))
+        print(city_forecast.get('low'))
+        print(city_forecast.get('type'))
+    else:
+        print('未获得数据')
