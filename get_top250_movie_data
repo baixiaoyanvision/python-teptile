@@ -23,6 +23,7 @@ i = Image.open(BytesIO(mobile_data.content))
 i.save(r'image.jpg','jpeg')
 
 #批量获取Top250部电影的数据，一部电影的数据生成一个列表，作为 csv 的一行保存到本地 .csv 文件
+list1 = []
 num = 0
 for i in range(0,13):
     req = requests.get("https://api.douban.com/v2/movie/top250?start=%d&apikey=0df993c66c0c636e29ecbb5344252a4a" %i)
@@ -68,13 +69,13 @@ for i in range(0,13):
         if num < 250:
             num += 1
             print(num)
-            with open('movie250.csv',"a+",encoding='utf-8') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(temp_list)
+            list1.append(temp_list)
             #获取每一部电影海报的url,下载电影海报到本地
             image_url = info.get('images').get('small')
             mobile_data = requests.get(image_url)
             img = Image.open(BytesIO(mobile_data.content))
             img.save(r'D://Python37//Learn//img//%s.jpg' %title,'jpeg')
-        
+with open('movie250.csv',"w+",encoding='utf-8') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerows(list1)
 print("保存成功！")
