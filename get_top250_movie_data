@@ -10,7 +10,10 @@ import csv
 import pandas
 
 #获取 “肖申克的救赎” 电影所有数据，并将电影海报写入本地的.jpg文件中
-req = requests.get("https://api.douban.com/v2/movie/1292052?apikey=0df993c66c0c636e29ecbb5344252a4a")
+try:
+    req = requests.get("https://api.douban.com/v2/movie/1292052?apikey=0df993c66c0c636e29ecbb5344252a4a")
+except:
+    print("获取内容失败！")
 web_data = req.json()
 url = web_data['image']
 #print(url)
