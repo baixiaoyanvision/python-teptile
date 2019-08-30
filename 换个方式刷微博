@@ -5,8 +5,8 @@
 import requests
 
 url = "https://weibo.com/a/hot/realtime"
-headers = {'cookie':'SINAGLOBAL=4047011619027.918.1557763301986; UOR=,,login.sina.com.cn; TC-V5-G0=06f20d05fbf5170830ff70a1e1f1bcae; SSOLoginState=1566786055; _s_tentry=login.sina.com.cn; Apache=8469386941402.581.1566786058131; ULV=1566786058151:5:5:1:8469386941402.581.1566786058131:1566466551315; Ugrow-G0=6fd5dedc9d0f894fec342d051b79679e; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WhBY-wUJlJ5av7ZZPxqWyKb5JpX5KMhUgL.FozNSh2c1KzXe022dJLoINRLxKBLB.zL1h5LxKBLBo.L1hnLxKqLBK5LBoMLxKML1-2L1hBLxKqL1KnLBo-LxKMLBKMLBo5LxKML1-eL12zLxKnLBo-LBoMLxKqL1-BLBK-LxKBLBonL12BLxK-L1heL12qLxK-L1heLBo-LxK-LBo5LBonLxKMLBozL1h.t; ALF=1598512596; SCF=AqECuVwm7dk82mMSNRa2W4RbY7gitHeDfEgOjFeFEZtMLhCXnc2oDBh79nLhHziU0X0P3FHohwhavwprkH6ts5I.; SUB=_2A25wYloIDeRhGeRJ71MX-SzIyD2IHXVTFszArDV8PUNbmtAKLRTSkW9NUnfMulq2CYOHsh9bv5y_cDqZ5fssIoQT; SUHB=0vJJigFZ_Ldt9Q; wvr=6; wb_view_log_2741692431=1280*7201.5; TC-Page-G0=b993e9b6e353749ed3459e1837a0ae89|1567050340|1567050303; webim_unReadCount=%7B%22time%22%3A1567050371373%2C%22dm_pub_total%22%3A0%2C%22chat_group_client%22%3A0%2C%22allcountNum%22%3A0%2C%22msgbox%22%3A2%7D',\
-           'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Safari/537.36'}
+headers = {'cookie':'你的cookie内容',\
+           'User-Agent':'你的user-agent内容'}
 try:
     req = requests.get(url, headers=headers)
 except:
