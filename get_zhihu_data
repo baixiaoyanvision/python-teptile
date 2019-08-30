@@ -1,0 +1,49 @@
+#登录知乎后抓取知乎时间线内容并将结果保存在本地的 csv 文件中
+
+
+import requests
+import csv
+
+def save_csv(lst):
+    with open('zhihu_data.csv', 'w+', encoding = 'utf-8') as f:
+        f_csv = csv.writer(f)
+        f_csv.writerows(lst)
+    print("保存成功")
+
+
+def get_data(url, headers):
+    try:
+        req = requests.get(url, headers = headers)
+    except:
+        print("获取内容失败")
+    
+    data = req.json()['data']
+    #print(data)
+
+    if data:
+        lst = []
+        for i in range(0,len(data)):
+            data_list = []
+            data_info = data[i].get('target')
+            question_content = data_info.get('question').get('title')
+            question_author = data_info.get('question').get('author').get('name')
+            answer_content = data_info.get('excerpt_new')
+            answer_author = data_info.get('author').get('name')
+            voteup_count = data_info.get('voteup_count')
+            thanks_count = data_info.get('thanks_count')
+            comment_count = data_info.get('comment_count')
+            data_list = [question_content, question_author, answer_content, answer_author, voteup_count, thanks_count, comment_count]
+            #print(data_list)
+            lst.append(data_list)
+        return lst
+    else:
+        print("没有内容")
+
+    
+if __name__ == '__main__':
+    url = 'https://www.zhihu.com/api/../recommend'
+    headers = {'cookie':'你的cookie内容',\
+           'user-agent':'你的user-agent内容'}
+    
+    lst = get_data(url, headers)
+    save_csv(lst)
