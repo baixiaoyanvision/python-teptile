@@ -1,0 +1,50 @@
+#在智联招聘（https://www.zhaopin.com/）中，抓取 python 相关职位一定数量的招聘信息；
+#进入每一个招聘详情页，抓取该职位的详细职位描述。最后将所有结果以 csv 形式保存在本地
+
+import requests
+import csv
+import time
+from bs4 import BeautifulSoup
+
+def get_info():
+    req = requests.get(url,headers = headers,cookies = cookies).json()   
+    if req.get('code')==200:          
+        all_jobs = req.get('data').get('results')
+        rows = []
+        for i in all_jobs:             #获取本页面信息
+            job_name = i.get('jobName')
+            company_name = i.get('company').get('name')
+            company_type = i.get('company').get('type').get('name')
+            company_size = i.get('company').get('size').get('name')
+            company_url = i.get('company').get('url')
+            job_city = i.get('city').get('display')
+            job_salary = i.get('salary')
+            job_level = i.get('eduLevel').get('name')
+            job_type_list = i.get('jobType').get('items')  #列表[{"name":"软件/互联网开发/系统集成"}]
+            job_type = [item[key] for item in job_type_list for key in item]   #列表['软件/互联网开发/系统集成']
+            try:
+                job_workingExp = i.get('workingExp').get('name')      #'workingExp'字典{'name': '3-5年'} 有部分空白
+            except:
+                job_workingExp = None
+            job_emplType = i.get('emplType')
+            welfare_list = i.get('welfare')   #列表
+            welfare = ','.join(welfare_list)
+            job_details = [job_name,company_name,company_type,company_size,company_url,job_city,job_salary,job_level,*job_type,job_workingExp,job_emplType,welfare]
+            rows.append(job_details)
+        return rows    #得到一页的数据
+        
+datas = []
+for page_number in range(0,270,90):    #一次爬取三页，一页有90个招聘信息
+    url = 'https://fe-api.zhaopin.com/c/i/sou?start=%d&pageSize=90&cityId=801&salary=0,0&workExperience=-1&education=-1&companyType=-1&employmentType=-1&jobWelfareTag=-1&kw=Python&kt=3&=0&_v=0.95294310&x-zp-page-request-id=93ff1df90079470b81ec654224ae1391-1567932557926-449024&x-zp-client-id=37993489-8ff4-453a-f754-df8a21cccd4a'%page_number
+    headers = {'User-Agent': '你自己的user-agent信息'}
+    cookies = {'Cookies': '你自己的cookie信息'}
+    rows = get_info()
+    datas.append(rows)
+    
+headers = ['职位名称','公司名称','公司类型','公司规模','公司链接','所在城市','薪资','学历要求','工作类型','期限','雇佣类型','福利']
+with open('zhilian_zhaopin.csv', 'w', newline='') as f:
+    f_csv = csv.writer(f)
+    f_csv.writerow(headers)
+    for data in datas:
+        f_csv.writerows(data)
+print ('保存数据完成！')
